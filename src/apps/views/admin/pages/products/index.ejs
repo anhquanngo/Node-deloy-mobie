@@ -1,0 +1,161 @@
+<%- include("../../layout/header") %> <%- include("../../layout/side-bar") %>
+<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+  <div class="row">
+    <ol class="breadcrumb">
+      <li>
+        <a href="#"
+          ><svg class="glyph stroked home">
+            <use xlink:href="#stroked-home"></use></svg
+        ></a>
+      </li>
+      <li class="active">Danh sách sản phẩm</li>
+    </ol>
+  </div>
+  <!--/.row-->
+
+  <div class="row">
+    <div class="col-lg-12">
+      <h1 class="page-header">Danh sách sản phẩm</h1>
+    </div>
+  </div>
+  <!--/.row-->
+
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <div class="bootstrap-table">
+            <div class="fixed-table-toolbar">
+              <div class="bars pull-left">
+                <div id="toolbar" class="btn-group">
+                  <a href="product-add.html" class="btn btn-success">
+                    <i class="glyphicon glyphicon-plus"></i> Thêm sản phẩm
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="fixed-table-container">
+              <div class="fixed-table-header">
+                <table></table>
+              </div>
+              <div class="fixed-table-body">
+                <div class="fixed-table-loading" style="top: 37px;">
+                  Loading, please wait…
+                </div>
+                <table
+                  data-toolbar="#toolbar"
+                  data-toggle="table"
+                  class="table table-hover"
+                >
+                  <thead>
+                    <tr>
+                      <th style="">
+                        <div class="th-inner sortable">STT</div>
+                        <div class="fht-cell"></div>
+                      </th>
+                      <th style="">
+                        <div class="th-inner sortable">Tên sản phẩm</div>
+                        <div class="fht-cell"></div>
+                      </th>
+                      <th style="">
+                        <div class="th-inner sortable">Giá</div>
+                        <div class="fht-cell"></div>
+                      </th>
+                      <th style="">
+                        <div class="th-inner">Ảnh sản phẩm</div>
+                        <div class="fht-cell"></div>
+                      </th>
+                      <th style="">
+                        <div class="th-inner">Trạng thái</div>
+                        <div class="fht-cell"></div>
+                      </th>
+                      <th style="">
+                        <div class="th-inner">Danh mục</div>
+                        <div class="fht-cell"></div>
+                      </th>
+                      <th style="">
+                        <div class="th-inner">Hành động</div>
+                        <div class="fht-cell"></div>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% products.forEach((product, index) => { %>
+                    <tr data-index="0">
+                      <td style=""><%= index + 1 %></td>
+                      <td style=""><%= product.prd_name %></td>
+                      <td style=""><%= product.prd_price %> vnd</td>
+                      <td style="">
+                        <img
+                          width="130"
+                          height="180"
+                          src="/assets/images/products/<%= product.prd_image %>"
+                        />
+                      </td>
+                      <td style="">
+                        <% if (product.prd_status === 1) { %>
+                        <span class="label label-success">Còn hàng</span>
+                        <% }else { %>
+                        <span class="label label-danger">Hết hàng</span>
+                        <% } %>
+                      </td>
+                      <td style=""><%= product.cat_id.cat_name %></td>
+                      <td class="form-group" style="">
+                        <a href="/admin/products/edit/<%= product._id %>" class="btn btn-primary"
+                          ><i class="glyphicon glyphicon-pencil"></i
+                        ></a>
+                        <a href="/admin/products/delete/<%= product._id %>" class="btn btn-danger"
+                          ><i class="glyphicon glyphicon-remove"></i
+                        ></a>
+                      </td>
+                    </tr>
+                    <% }) %>
+                  </tbody>
+                </table>
+              </div>
+              <div class="fixed-table-pagination"></div>
+            </div>
+          </div>
+          <div class="clearfix"></div>
+        </div>
+        <div class="panel-footer">
+
+
+          <nav aria-label="Page navigation example">
+            <ul class="pagination">
+              <% if (page > 1) { %>
+                <li class="page-item ">
+                  <a class="page-link" href="/admin/products?page=<%= page - 1 %>"> Prev </a>
+                </li>
+              <% } %>
+              <% range.map((i) => { %>
+              <li class="page-item <%= page === i ? "active" : "" %>">
+
+                <% if (i === "...") { %>
+
+                   <span> <%= i %> </span>
+
+               <% } else { %>
+
+                <a class="page-link" href="/admin/products?page=<%= i %>"><%= i %></a>
+                <% } %>
+              </li>
+              <% }) %>
+          <% if (page < totalPages) { %>
+          <li class="page-item ">
+            <a class="page-link" href="/admin/products?page=<%= page + 1 %>"> Next </a>
+          </li>
+          <% } %>
+
+            </ul>
+          </nav>
+
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--/.row-->
+</div>
+<%- include("../../layout/footer") %>

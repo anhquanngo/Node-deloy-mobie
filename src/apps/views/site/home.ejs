@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <%- include("layout/head", {title: "Trang chủ"}) %>
+  </head>
+
+  <body>
+    <!--	Header	-->
+    <%- include("layout/header") %>
+    <!--	End Header	-->
+
+    <!--	Body	-->
+    <div id="body">
+      <div class="container">
+        <div class="row">
+          <%- include("layout/menu") %>
+        </div>
+        <div class="row">
+          <div id="main" class="col-lg-8 col-md-12 col-sm-12">
+            <!--	Slider	-->
+            <div id="slide" class="carousel slide" data-ride="carousel">
+              <!-- Indicators -->
+              <%- include("layout/slider") %>
+            </div>
+            <!--	End Slider	-->
+
+            <!--	Feature Product	-->
+            <div class="products">
+              <h3>Sản phẩm nổi bật</h3>
+              <div class="product-list card-deck">
+                <% for (let product of ProductFeatured) { %> <%-
+                include("components/product-item", {product}) %> <% } %>
+              </div>
+            </div>
+            <!--	End Feature Product	-->
+
+            <!--	Latest Product	-->
+            <div class="products">
+              <h3>Sản phẩm mới</h3>
+              <div class="product-list card-deck">
+                <% for (let product of ProductNew) { %> <%-
+                include("components/product-item", {product}) %> <% } %>
+              </div>
+            </div>
+            <!--	End Latest Product	-->
+          </div>
+
+          <div id="sidebar" class="col-lg-4 col-md-12 col-sm-12">
+            <%- include("layout/sidebar") %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--	End Body	-->
+
+    <!--	Footer	-->
+    <%- include("layout/footer")%>
+    <!--	End Footer	-->
+  </body>
+</html>

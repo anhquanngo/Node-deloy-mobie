@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <%- include("layout/head", {title: "Giỏ hàng"}) %>
+    <link rel="stylesheet" href="css/cart.css" />
+  </head>
+
+  <body>
+    <!--	Header	-->
+    <%- include("layout/header") %>
+    <!--	End Header	-->
+
+    <!--	Body	-->
+    <div id="body">
+      <div class="container">
+        <div class="row">
+          <%- include("layout/menu") %>
+        </div>
+        <div class="row">
+          <div id="main" class="col-lg-8 col-md-12 col-sm-12">
+            <!--	Slider	-->
+            <div id="slide" class="carousel slide" data-ride="carousel">
+              <!-- Indicators -->
+              <%- include("layout/slider") %>
+            </div>
+            <!--	End Slider	-->
+
+            <!--	Cart	-->
+            <div id="my-cart">
+              <div class="row">
+                <div class="cart-nav-item col-lg-7 col-md-7 col-sm-12">
+                  Thông tin sản phẩm
+                </div>
+                <div class="cart-nav-item col-lg-2 col-md-2 col-sm-12">
+                  Tùy chọn
+                </div>
+                <div class="cart-nav-item col-lg-3 col-md-3 col-sm-12">Giá</div>
+              </div>
+              <form method="post" id="cart-list">
+                <%- include("components/list-cart") %>
+              </form>
+            </div>
+            <!--	End Cart	-->
+
+            <!--	Customer Info	-->
+            <div id="customer">
+              <form method="post" action="/cart/order">
+                <div class="row">
+                  <div id="customer-name" class="col-lg-4 col-md-4 col-sm-12">
+                    <input
+                      placeholder="Họ và tên (bắt buộc)"
+                      type="text"
+                      name="name"
+                      class="form-control"
+                      required
+                    />
+                  </div>
+                  <div id="customer-phone" class="col-lg-4 col-md-4 col-sm-12">
+                    <input
+                      placeholder="Số điện thoại (bắt buộc)"
+                      type="text"
+                      name="phone"
+                      class="form-control"
+                      required
+                    />
+                  </div>
+                  <div id="customer-mail" class="col-lg-4 col-md-4 col-sm-12">
+                    <input
+                      placeholder="Email (bắt buộc)"
+                      type="text"
+                      name="mail"
+                      class="form-control"
+                      required
+                    />
+                  </div>
+                  <div id="customer-add" class="col-lg-12 col-md-12 col-sm-12">
+                    <input
+                      placeholder="Địa chỉ nhà riêng hoặc cơ quan (bắt buộc)"
+                      type="text"
+                      name="add"
+                      class="form-control"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="by-now col-lg-6 col-md-6 col-sm-12">
+                    <button type="submit" class="btn btn-success btn-lg">
+                      <b>Mua ngay</b>
+                      <span>Giao hàng tận nơi siêu tốc</span>
+                    </button>
+                  </div>
+                  <div class="by-now col-lg-6 col-md-6 col-sm-12">
+                    <a href="#">
+                      <b>Trả góp Online</b>
+                      <span>Vui lòng call (+84) 0988 550 553</span>
+                    </a>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <!--	End Customer Info	-->
+          </div>
+          <!-- Main content -->
+
+          <div id="sidebar" class="col-lg-4 col-md-12 col-sm-12">
+            <%- include("layout/sidebar") %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--	End Body	-->
+
+    <!--	Footer	-->
+    <%- include("layout/footer")%>
+    <!--	End Footer	-->
+    <script>
+      function renderListCart(data) {
+        if ("success" === data.status) {
+          $("#cart-list").html(data.data.html);
+          $("#total-item").html(data.data.totalItem);
+        }
+      }
+      function deleteCart(id, type) {
+        if (id === "item" || id === "all") {
+          type = id;
+          id = undefined;
+        }
+
+        const isDelete = confirm(
+          `Bạn muốn xóa ${
+            type === "all" ? "toàn bộ giỏ hàng" : "sản phẩm này khỏi giỏ hàng"
+          }`
+        );
+        if (!isDelete) return isDelete;
+
+        $.ajax({
+          method: "POST",
+          data: {
+            type: type,
+            id: id,
+          },
+          url: "/ajax/delete-cart",
+        }).done(renderListCart);
+        return isDelete;
+      }
+      function updateCart(e) {}
+
+      $(document).ready(function () {
+        $(document).on("blur", "input.quantity", function (e) {
+          const self = $(this);
+          const id = self.data("id");
+
+          const qty = self.val();
+
+          if (qty <= 0) {
+            return;
+          }
+
+          $.ajax({
+            method: "POST",
+            url: "/ajax/update-cart",
+            data: {
+              id: id,
+              qty: qty,
+            },
+          }).done(renderListCart);
+        });
+
+        $(document).on("change", "input.quantity", function (e) {
+          const self = $(this);
+          const qty = self.val();
+          const id = self.data("id");
+
+          if (qty <= 0 && !deleteCart(id, "item")) {
+            self.val(1);
+          }
+        });
+
+        $(document).on("click", "#delete-cart-all", function (e) {
+          e.preventDefault();
+          deleteCart("all");
+        });
+
+        $(document).on("click", "a.delete-cart-item", function (e) {
+          e.preventDefault();
+          const self = $(this);
+          const id = self.data("id");
+          deleteCart(id, "item");
+        });
+      });
+    </script>
+  </body>
+</html>
